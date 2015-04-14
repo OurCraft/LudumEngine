@@ -1,11 +1,6 @@
 package org.jglrxavpok
 
-import java.nio.ByteBuffer
-
 import org.lwjgl.opengl.GL11._
-import org.lwjgl.opengl.GLContext
-import org.lwjgl.system.glfw.{GLFWvidmode, ErrorCallback}
-import org.lwjgl.system.glfw.GLFW._
 
 object TestOGL extends App {
 
@@ -20,18 +15,13 @@ object TestOGL extends App {
     val height: Int = 460
     val width: Int = (height*ratio).toInt
     val title = "OpenGL with Scala! :)"
-    glfwSetErrorCallback(ErrorCallback.Util.getDefault)
 
-    if(glfwInit != GL_TRUE)
-      throw new IllegalStateException("Unable to initialize GLFW")
+    LWJGLSetup.load(SystemUtils.getGameFolder("LudumEngine"))
     window = new Window(width, height, title)
     window.create
 
-    val vidmode: ByteBuffer = glfwGetVideoMode(glfwGetPrimaryMonitor())
-    window.setPos((GLFWvidmode.width(vidmode) - width) / 2,(GLFWvidmode.height(vidmode) - height) / 2)
     print(window.getPos)
 
-    GLContext.createFromCurrent()
     texture = new Texture("assets/textures/test.png")
   }
 
@@ -60,7 +50,6 @@ object TestOGL extends App {
         glVertex2f(-1f,1f)
       glEnd
       window.refresh
-      window.pollEvents
     }
 
     window.dispose
