@@ -1,0 +1,72 @@
+import org.apache.tools.ant.filters.FixCrLfFilter
+import org.apache.tools.ant.filters.ReplaceTokens
+
+def filteredSourceDir = file("${buildDir}/filtered")
+
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+// Maven Artefacts Info
+group = "org.c1"
+archivesBaseName = '0xC1'
+
+//IDE
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sonatype-nexus'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+task processVersion(type: Copy) {
+    from sourceSets.main.java 
+    into filteredSourceDir 
+    // Substitute property references in files
+    // Use some of the filters provided by Ant
+    filter(FixCrLfFilter)
+    filter(ReplaceTokens, tokens: ['version': version])
+    // Use a closure to filter each line
+    filter { String line ->
+        ("$line".replaceAll('"LudumEngine:BuildNumber"', '"'+version+'"'))
+    }
+}
+
+sourceSets {
+    filtered {
+        java {
+            srcDirs = [filteredSourceDir]
+        }
+    }
+}
+
+//force UTF-8 to the compileJava task
+compileJava.options.encoding = 'UTF-8'
+
+// tell the compileJava task to compile the filtered source 
+compileJava.source = sourceSets.filtered.java
+// Add dependencies processVersion to compileJava task
+compileJava.dependsOn processVersion 
+
+dependencies {
+    compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
+    compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    compile 'io.netty:netty-all:4.0.25.Final'
+    compile 'com.google.guava:guava:18.0'
+}
+
+jar
+{
+    manifest {
+        attributes 'Implementation-Title': '0xC1', 'Implementation-Version': version
+    }
+}
