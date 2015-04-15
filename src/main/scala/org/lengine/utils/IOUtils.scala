@@ -1,6 +1,7 @@
-package org.jglrxavpok;
+package org.lengine.utils
 
-import java.io.{InputStream, OutputStream, ByteArrayOutputStream, FileNotFoundException};
+import java.io.{ByteArrayOutputStream, FileNotFoundException, InputStream, OutputStream}
+;
 
 object IOUtils {
 
@@ -19,10 +20,10 @@ object IOUtils {
         val input: InputStream = getClass.getResourceAsStream("/" + classpathLoc)
         if (input == null)
             throw new FileNotFoundException("No file found in classpath: /" + classpathLoc)
-        val out: ByteArrayOutputStream = new ByteArrayOutputStream()
+        val out: ByteArrayOutputStream = new ByteArrayOutputStream
         copy(input, out)
-        input.close()
-        out.close()
-        new String(out.toByteArray(), charset)
+        input.close
+        out.close
+        new String(out.toByteArray, charset)
     }
 }

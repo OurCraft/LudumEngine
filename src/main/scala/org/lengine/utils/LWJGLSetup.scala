@@ -1,21 +1,21 @@
-package org.jglrxavpok;
+package org.lengine.utils
 
-import java.io.{FileOutputStream, IOException, InputStream, File}
+import java.io.{File, FileOutputStream, InputStream}
 import java.util.regex.Pattern
 import java.util.{HashMap, Map}
 
 object LWJGLSetup {
 
     def load(folder: File): Unit = {
-        if (!folder.exists())
-            folder.mkdirs();
-        if (folder.isDirectory()) {
-            val nativesMap: Map[String, Array[String]] = createNativesMap()
+        if (!folder.exists)
+            folder.mkdirs
+        if (folder.isDirectory) {
+            val nativesMap: Map[String, Array[String]] = createNativesMap
             val arch: String = System.getProperty("os.arch")
             val is64bits: Boolean = !arch.equals("x86")
-            val os: String = SystemUtils.getOS()
+            val os: String = SystemUtils.getOS
 
-            val arch64Variants: Array[String] = Array("_64", "64", "");
+            val arch64Variants: Array[String] = Array("_64", "64", "")
             val nativesList: Array[String] = nativesMap.get(os)
             if (nativesList != null) {
                 for (f <- nativesList) {
@@ -25,29 +25,29 @@ object LWJGLSetup {
                         var name: String = sum(parts, 0, parts.length - 1)
                         name += variant + "." + parts(parts.length - 1)
                         if (exists(name)) {
-                            if (!new File(folder, name).exists()) {
-                                extractFromClasspath(name, folder);
-                                println("Successfully extracted native from classpath: " + name)
+                            if (!new File(folder, name).exists) {
+                                extractFromClasspath(name, folder)
+                                println(s"Successfully extracted native from classpath: $name")
                             }
                         }
                     }
                 }
             }
-            System.setProperty("net.java.games.input.librarypath", folder.getAbsolutePath())
-            System.setProperty("org.lwjgl.librarypath", folder.getAbsolutePath())
+            System.setProperty("net.java.games.input.librarypath", folder.getAbsolutePath)
+            System.setProperty("org.lwjgl.librarypath", folder.getAbsolutePath)
         }
     }
 
     def sum(parts: Array[String], offset: Int, length: Int): String = {
-        val buffer: StringBuilder = new StringBuilder()
+        val buffer: StringBuilder = new StringBuilder
         for (i <- offset until offset+length) {
             buffer.append(parts(i))
         }
-        buffer.toString()
+        buffer.toString
     }
 
     def exists(fileName: String): Boolean = {
-        val stream: InputStream = getClass.getResourceAsStream("/" + fileName);
+        val stream: InputStream = getClass.getResourceAsStream("/" + fileName)
         if (stream != null) {
             stream.close
             return true
@@ -55,12 +55,12 @@ object LWJGLSetup {
         return false
     }
 
-    def createNativesMap(): Map[String, Array[String]] = {
-        val nativesMap: Map[String, Array[String]] = new HashMap[String, Array[String]]()
+    def createNativesMap: Map[String, Array[String]] = {
+        val nativesMap: Map[String, Array[String]] = new HashMap[String, Array[String]]
         val win: Array[String] = Array("jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll")
         nativesMap.put(OperatingSystem.WINDOWS, win)
 
-        val macosx: Array[String] = Array("liblwjgl.jnilib", "liblwjgl-osx.jnilib", "openal.dylib");
+        val macosx: Array[String] = Array("liblwjgl.jnilib", "liblwjgl-osx.jnilib", "openal.dylib")
         nativesMap.put(OperatingSystem.MACOSX, macosx)
 
         val unix: Array[String] =  Array("liblwjgl.so", "libopenal.so")
@@ -75,7 +75,7 @@ object LWJGLSetup {
     def extractFromClasspath(fileName: String, folder: File): Unit = {
         val out: FileOutputStream = new FileOutputStream(new File(folder, fileName))
         IOUtils.copy(getClass.getResourceAsStream("/" + fileName), out)
-        out.flush()
-        out.close()
+        out.flush
+        out.close
     }
 }

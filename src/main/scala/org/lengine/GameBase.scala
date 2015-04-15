@@ -1,10 +1,15 @@
-package org.jglrxavpok
+package org.lengine
 
+import java.io.File
+
+import org.lengine.render.{Window, Texture}
+import org.lengine.utils.{SystemUtils, LWJGLSetup}
 import org.lwjgl.opengl.GL11._
 
-object TestOGL extends App {
+abstract class GameBase(id: String) extends App {
 
   initOpenGL
+  initGame
   loop
   var window: Window = null
 
@@ -16,7 +21,8 @@ object TestOGL extends App {
     val width: Int = (height*ratio).toInt
     val title = "OpenGL with Scala! :)"
 
-    LWJGLSetup.load(SystemUtils.getGameFolder("LudumEngine"))
+    val gameFolder = SystemUtils.getGameFolder(s"LudumEngine/$id")
+    LWJGLSetup.load(new File(gameFolder.getParentFile, "natives"))
     window = new Window(width, height, title)
     window.create
 
@@ -24,6 +30,12 @@ object TestOGL extends App {
 
     texture = new Texture("assets/textures/test.png")
   }
+
+  def initGame: Unit
+
+  def render: Unit
+
+  def update: Unit
 
   def loop: Unit = {
     while(!window.shouldClose) {
@@ -49,6 +61,8 @@ object TestOGL extends App {
         glTexCoord2f(0,1)
         glVertex2f(-1f,1f)
       glEnd
+
+      render
       window.refresh
     }
 

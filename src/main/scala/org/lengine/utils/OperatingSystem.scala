@@ -1,8 +1,5 @@
-package org.jglrxavpok
+package org.lengine.utils
 
-/**
- * Created by jglrxavpok on 14/04/2015.
- */
 object OperatingSystem {
 
   val WINDOWS: String = "win"

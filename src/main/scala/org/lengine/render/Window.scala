@@ -1,10 +1,6 @@
-package org.jglrxavpok
+package org.lengine.render
 
-/**
- * Created by jglrxavpok on 03/04/2015.
- */
-
-import org.lwjgl.opengl.{DisplayMode, Display}
+import org.lwjgl.opengl.{Display, DisplayMode}
 
 class Window(var width: Int, var height: Int, var title: String = "OpenGL Window") {
   private var resizable = false
@@ -38,7 +34,7 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
 
   def setPos(x: Int, y: Int) = Display.setLocation(x, y)
 
-  def getPos(): (Int, Int) = {
+  def getPos: (Int, Int) = {
     (Display.getX, Display.getY)
   }
 
@@ -47,13 +43,16 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
     resizable = _resizable
   }
 
-  def isResizable() = resizable
+  def isResizable = resizable
 
-  def isVisible() = Display.isVisible
+  def isVisible = Display.isVisible
 
-  def shouldClose() = Display.isCloseRequested
+  def shouldClose = Display.isCloseRequested
 
-  def refresh: Unit = Display.update()
+  def refresh: Unit = {
+    Display.sync(60)
+    Display.update
+  }
 
-  def dispose: Unit = Display.destroy()
+  def dispose: Unit = Display.destroy
 }

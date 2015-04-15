@@ -1,13 +1,14 @@
-package org.jglrxavpok;
+package org.lengine.utils
 
-import java.io.{File};
+import java.io.File
+;
 
 object SystemUtils {
 
     private var gameFolder: File = _
 
-    def getOS(): String = {
-        val os: String = System.getProperty("os.name").toLowerCase()
+    def getOS: String = {
+        val os: String = System.getProperty("os.name").toLowerCase
         if (os.contains("win")) {
             return OperatingSystem.WINDOWS
         } else if (os.contains("sunos") || os.contains("solaris")) {
@@ -30,6 +31,9 @@ object SystemUtils {
                 gameFolder = new File(appdata, gameID)
             else
                 gameFolder = new File(System.getProperty("user.home"), gameID)
+
+            if(!gameFolder.exists)
+                gameFolder.mkdirs
         }
         gameFolder
     }

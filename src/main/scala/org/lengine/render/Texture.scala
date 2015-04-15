@@ -1,13 +1,10 @@
-package org.jglrxavpok
-
-/**
- * Created by jglrxavpok on 04/04/2015.
- */
+package org.lengine.render
 
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
+
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12
 
