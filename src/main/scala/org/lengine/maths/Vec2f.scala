@@ -1,13 +1,16 @@
 package org.lengine.maths
 
-object X extends Vec2f(1)
-object Y extends Vec2f(0,1)
+object NULL2 extends Vec2f
+object X2 extends Vec2f(1)
+object Y2 extends Vec2f(0,1)
 
 class Vec2f(var x: Float = 0, var y: Float = 0) {
+  def toVec3(): Vec3f = new Vec3f(x,y,0)
+
 
   def dot(other: Vec2f): Float = this.x * other.x + this.y * other.y
 
-  def angle(): Float = Math.acos(dot(X)).toFloat
+  def angle(): Float = Math.acos(dot(X2)).toFloat
 
   def isNull(): Boolean = x == 0f && y == 0f
 
@@ -19,11 +22,51 @@ class Vec2f(var x: Float = 0, var y: Float = 0) {
 
   def rotate(angle: Float): Vec2f = {
     val l: Float = ~this
-    val nx: Float = (Math.cos(angle) * l).asInstanceOf[Float]
-    val ny: Float = (-Math.sin(angle) * l).asInstanceOf[Float]
+    val nx: Float = (Math.cos(angle) * l).toFloat
+    val ny: Float = (-Math.sin(angle) * l).toFloat
     x = nx
     y = ny
     this
+  }
+
+  def +(other: Float): Vec2f = {
+    new Vec2f(x + other, y + other)
+  }
+
+  def /=(other: Float): Vec2f = {
+    x /= other
+    y /= other
+    this
+  }
+
+  def *=(other: Float): Vec2f = {
+    x *= other
+    y *= other
+    this
+  }
+
+  def -=(other: Float): Vec2f = {
+    x -= other
+    y -= other
+    this
+  }
+
+  def +=(other: Float): Vec2f = {
+    x += other
+    y += other
+    this
+  }
+
+  def -(other: Float): Vec2f = {
+    new Vec2f(x - other, y - other)
+  }
+
+  def *(other: Float): Vec2f = {
+    new Vec2f(x * other, y * other)
+  }
+
+  def /(other: Float): Vec2f = {
+    new Vec2f(x / other, y / other)
   }
 
   def +(other: Vec2f): Vec2f = {
@@ -54,9 +97,6 @@ class Vec2f(var x: Float = 0, var y: Float = 0) {
     this
   }
 
-  def unary_-(): Vec2f = {
-    new Vec2f(-x, -y)
-  }
 
   def -(other: Vec2f): Vec2f = {
     new Vec2f(x - other.x, y - other.y)
@@ -70,13 +110,55 @@ class Vec2f(var x: Float = 0, var y: Float = 0) {
     new Vec2f(x / other.x, y / other.y)
   }
 
-  def unary_~(): Float = len
+  def +(other: (Float, Float)): Vec2f = {
+    new Vec2f(x + other._1, y + other._2)
+  }
+
+  def /=(other: (Float, Float)): Vec2f = {
+    x /= other._1
+    y /= other._2
+    this
+  }
+
+  def *=(other: (Float, Float)): Vec2f = {
+    x *= other._1
+    y *= other._2
+    this
+  }
+
+  def -=(other: (Float, Float)): Vec2f = {
+    x -= other._1
+    y -= other._2
+    this
+  }
+
+  def +=(other: (Float, Float)): Vec2f = {
+    x += other._1
+    y += other._2
+    this
+  }
+
+  def -(other: (Float, Float)): Vec2f = {
+    new Vec2f(x - other._1, y - other._2)
+  }
+
+  def *(other: (Float, Float)): Vec2f = {
+    new Vec2f(x * other._1, y * other._2)
+  }
+
+  def /(other: (Float, Float)): Vec2f = {
+    new Vec2f(x / other._1, y / other._2)
+  }
 
   def len: Float = {
     val dx: Float = x*x
     val dy: Float = y*y
     Math.sqrt(dx+dy).toFloat
   }
+
+  def unary_~(): Float = len
+
+  def unary_-(): Vec2f = new Vec2f(-x, -y)
 
   override def toString: String = s"Vec2f($x, $y)"
 }

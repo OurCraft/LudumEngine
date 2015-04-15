@@ -6,7 +6,7 @@ import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 import org.lwjgl.opengl.GL11._
-import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.{GL13, GL12}
 
 class Texture(path: String) {
   private val input: InputStream = getClass.getResourceAsStream("/"+path)
@@ -48,5 +48,14 @@ class Texture(path: String) {
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
 
-  def bind = glBindTexture(GL_TEXTURE_2D, texID)
+  def bind(): Unit = bind(0)
+
+  def bind(slot: Int): Unit = {
+    GL13.glActiveTexture(GL13.GL_TEXTURE0 + slot)
+    glBindTexture(GL_TEXTURE_2D, texID)
+  }
+
+  def getWidth = w
+
+  def getHeight = h
 }

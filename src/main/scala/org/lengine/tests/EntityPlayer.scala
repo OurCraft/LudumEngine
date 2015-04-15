@@ -10,4 +10,8 @@ class EntityPlayer extends Entity {
   override def init: Unit = {
 
   }
+
+  override def update: Unit = {
+
+  }
 }

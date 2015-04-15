@@ -10,10 +10,7 @@ abstract class Entity {
 
   def render: Unit
 
-  def update: Unit = {
-    println(pos)
-    println(~pos)
-  }
+  def update: Unit
 
   def init: Unit
 

@@ -1,0 +1,47 @@
+package org.lengine.render
+
+import org.lengine.maths.Mat4f
+import org.lwjgl.opengl.GL20
+
+object RenderEngine {
+
+  var displayWidth: Int = 0
+  var displayHeight: Int = 0
+  var shader: Shader = _
+  var transformMatrix: Mat4f = _
+  var projectionMatrix: Mat4f = _
+
+  setShader(new Shader("assets/shaders/base"))
+  setTransformMatrix(new Mat4f().identity)
+  setProjectionMatrix(new Mat4f().orthographic(0,1000,0,1000))
+
+  def setShader(newShader: Shader): Unit = {
+    shader = newShader
+    if(shader != null) {
+      shader.bind
+    }
+    else {
+      GL20.glUseProgram(0)
+    }
+  }
+
+  def setViewportSize(width: Int, height: Int): Unit = {
+    displayWidth = width
+    displayHeight = height
+    setProjectionMatrix(new Mat4f().orthographic(0, width, 0, height))
+  }
+
+  def setProjectionMatrix(mat: Mat4f): Unit = {
+    projectionMatrix = mat
+    if(shader != null) {
+      shader.setUniformMat4("projection", mat)
+    }
+  }
+
+  def setTransformMatrix(mat: Mat4f): Unit = {
+    transformMatrix = mat
+    if(shader != null) {
+      shader.setUniformMat4("transform", mat)
+    }
+  }
+}
