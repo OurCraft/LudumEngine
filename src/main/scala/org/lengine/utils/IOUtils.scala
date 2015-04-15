@@ -13,7 +13,7 @@ object IOUtils {
             if(i != -1)
                 out.write(buffer, 0, i)
         }
-        out.flush()
+        out.flush
     }
 
     def read(classpathLoc: String, charset: String): String = {

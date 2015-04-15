@@ -39,6 +39,7 @@ abstract class GameBase(id: String) extends App {
 
   def loop: Unit = {
     while(!window.shouldClose) {
+      update
       glClearColor(0,0,0,1)
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
       glColor3f(1,0,0)
