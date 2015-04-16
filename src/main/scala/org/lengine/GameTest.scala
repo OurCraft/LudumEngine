@@ -11,6 +11,8 @@ object GameTest extends GameBase("test") {
 
   var testSprite: Sprite = _
 
+  var testSprite2: Sprite = _
+
   override def initGame: Unit = {
     level = new Level
     val player: EntityPlayer = new EntityPlayer
@@ -19,6 +21,11 @@ object GameTest extends GameBase("test") {
     testSprite.width /= 2f
     testSprite.height /= 2f
     testSprite.getCenter /= 2f
+
+    testSprite2 = new Sprite("assets/textures/test.png")
+    testSprite2.width /= 4f
+    testSprite2.height /= 4f
+    testSprite2.getCenter /= 4f
   }
 
   override def update(delta: Float): Unit = {
@@ -31,6 +38,7 @@ object GameTest extends GameBase("test") {
   override def render(delta: Float): Unit = {
     level.render(delta)
     testSprite.render(delta)
+    testSprite2.render(delta)
   }
 
   override def getBaseHeight: Int = 640
@@ -41,6 +49,7 @@ object GameTest extends GameBase("test") {
 
   override def onMouseMoved(x: Int, y: Int, dx: Int, dy: Int): Unit = {
     testSprite.setPos(x-testSprite.getCenter().x, y-testSprite.getCenter().y)
+    testSprite2.setPos(testSprite.getPos.x-200, testSprite.getPos.y-100)
   }
 
   override def onMousePressed(x: Int, y: Int, button: Int): Unit = {}

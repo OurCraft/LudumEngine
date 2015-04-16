@@ -4,8 +4,7 @@ import org.lengine.maths._
 
 class Sprite(var texture: Texture) {
 
-  var x = 0
-  var y = 0
+
   var width: Float = texture.getWidth
   var height: Float = texture.getHeight
 
@@ -60,5 +59,9 @@ class Sprite(var texture: Texture) {
 
   def setCenter(c: Vec2f): Unit = {
     transform.center.set(c)
+  }
+
+  def getPos(): Vec2f = {
+    transform.pos
   }
 }
