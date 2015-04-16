@@ -14,6 +14,12 @@ class Vec2f(var x: Float = 0, var y: Float = 0) {
 
   def isNull(): Boolean = x == 0f && y == 0f
 
+  def set(x: Float, y: Float): Vec2f = {
+    this.x = x
+    this.y = y
+    this
+  }
+
   def set(other: Vec2f): Vec2f = {
     x = other.x
     y = other.y

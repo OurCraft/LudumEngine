@@ -4,6 +4,7 @@ import java.io.File
 
 import org.lengine.render.{RenderEngine, Window, Texture}
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11._
 
 abstract class GameBase(id: String) extends App {
@@ -11,9 +12,10 @@ abstract class GameBase(id: String) extends App {
   initOpenGL
   initGame
   loop
-  var window: Window = null
 
-  var texture: Texture = null
+  var fps: Int = _
+  var frames: Int = _
+  var window: Window = null
 
   def getBaseHeight: Int
 
@@ -29,16 +31,13 @@ abstract class GameBase(id: String) extends App {
     window.create
 
     RenderEngine.setViewportSize(width, height)
-    print(window.getPos)
-
-    texture = new Texture("assets/textures/test.png")
   }
 
   def initGame: Unit
 
-  def render: Unit
+  def render(delta: Float): Unit
 
-  def update: Unit
+  def update(delta: Float): Unit
 
   def checkOpenGLError(trailing: String) = {
     val error: Int = glGetError
@@ -47,39 +46,76 @@ abstract class GameBase(id: String) extends App {
     }
   }
 
-  def loop: Unit = {
-    while(!window.shouldClose) {
-      update
-      glClearColor(0,0,0,1)
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-      glEnable(GL_TEXTURE_2D)
-      glColor3f(0,1,0)
-      glRectf(0,0,1,1)
+  def onScroll(x: Int, y: Int, dir: Int): Unit
 
-      glColor3f(1,1,1)
-   /*   texture.bind
-      glEnable(GL_TEXTURE_2D)
-      glBegin(GL_QUADS)
+  def onMouseMoved(x: Int, y: Int, dx: Int, dy: Int): Unit
 
-        glTexCoord2f(0,0)
-        glVertex2f(-1f,-1f)
+  def onMousePressed(x: Int, y: Int, button: Int): Unit
 
-        glTexCoord2f(1,0)
-        glVertex2f(1f,-1f)
+  def onMouseReleased(x: Int, y: Int, button: Int): Unit
 
-        glTexCoord2f(1,1)
-        glVertex2f(1f,1f)
+  def pollEvents(d: Float) = {
+    while(Mouse.next) {
+      val dwheel: Int = Math.signum(Mouse.getEventDWheel).toInt
+      val mouseButton: Int = Mouse.getEventButton
+      val state: Boolean = Mouse.getEventButtonState
+      val x: Int = Mouse.getEventX
+      val y: Int = Mouse.getEventY
+      val dx: Int = Mouse.getEventDX
+      val dy: Int = Mouse.getEventDY
 
-        glTexCoord2f(0,1)
-        glVertex2f(-1f,1f)
-      glEnd*/
-
-      render
-      checkOpenGLError("end of rendering")
-      window.refresh
+      if(dwheel != 0) {
+        onScroll(x, y, dwheel)
+      } else if(mouseButton != -1) {
+        if(state) {
+          onMousePressed(x, y, mouseButton)
+        } else {
+          onMouseReleased(x, y, mouseButton)
+        }
+      } else {
+        onMouseMoved(x, y, dx, dy)
+      }
     }
+  }
 
-    window.dispose
+  def loop: Unit = {
+    var lastTime: Long = System.nanoTime
+    var delta: Float = 0.0f
+    val ns: Float = 1000000000.0f / 60.0f
+    var timer: Long = System.currentTimeMillis
+    var updates: Int = 0
+    var running: Boolean = true
+    while (running) {
+      val now: Long = System.nanoTime
+      var polledInput: Boolean = false
+      delta += (now - lastTime) / ns
+      lastTime = now
+      while (delta >= 1.0) {
+        val deltaTime: Float = ns / 1000000000.0f // TODO: use a proper system
+        if (!polledInput) {
+          pollEvents(deltaTime)
+          polledInput = true
+        }
+        update(deltaTime)
+        updates += 1
+        delta -= 1
+      }
+
+      RenderEngine.clearColorBuffer(0,0,0,1)
+      RenderEngine.enableTextures
+      render(ns / 1000000000.0f)
+      window.refresh
+
+      frames += 1
+      if (System.currentTimeMillis - timer > 1000) {
+        timer += 1000
+        window.setTitle(s"'$id' - $fps fps")
+        fps = frames
+        updates = 0
+        frames = 0
+      }
+      if (window.shouldClose) running = false
+    }
   }
 
   implicit def toTexture(texture: String): Texture = {

@@ -2,57 +2,64 @@ package org.lengine.maths
 
 object Quaternions {
   def create(axis: Vec3f, angle: Float): Quaternion = {
-    val sinHalfAngle: Float = Math.sin(angle / 2).toFloat
-    val cosHalfAngle: Float = Math.cos(angle / 2).toFloat
-
-    val x = axis.x * sinHalfAngle
-    val y = axis.y * sinHalfAngle
-    val z = axis.z * sinHalfAngle
-    val w = cosHalfAngle
-    new Quaternion(x,y,z,w)
+    new Quaternion().set(axis, angle)
   }
-
 }
 
 class Quaternion(var x: Float = 0, var y: Float = 0, var z: Float = 0, var w: Float = 1) {
 
-  def toRotationMatrix(): Mat4f = {
-    val res: Mat4f = new Mat4f
-    res.rotation(forward, up, right)
+  def set(axis: Vec3f, angle: Float): Quaternion = {
+    val rangedAngle: Float = angle % (Math.PI * 2f).toFloat
+    val sinHalfAngle: Float = Math.sin(rangedAngle / 2).toFloat
+    val cosHalfAngle: Float = Math.cos(rangedAngle / 2).toFloat
+
+    x = axis.x * sinHalfAngle
+    y = axis.y * sinHalfAngle
+    z = axis.z * sinHalfAngle
+    w = cosHalfAngle
+
+    this
+  }
+
+  def toRotationMatrix: Mat4f = {
+    val forward1: Vec3f = new Vec3f(2.0f * (x * z - w * y), 2.0f * (y * z + w * x), 1.0f - 2.0f * (x * x + y * y))
+    val up1: Vec3f = new Vec3f(2.0f * (x * y + w * z), 1.0f - 2.0f * (x * x + z * z), 2.0f * (y * z - w * x))
+    val right1: Vec3f = new Vec3f(1.0f - 2.0f * (y * y + z * z), 2.0f * (x * y - w * z), 2.0f * (x * z + w * y))
+    new Mat4f().rotation(forward1, up1, right1)
   }
 
   def forward: Vec3f = {
-    return new Vec3f(0, 0, 1).rotate(this)
+    new Vec3f(0, 0, 1).rotate(this)
   }
 
   def back: Vec3f = {
-    return new Vec3f(0, 0, -1).rotate(this)
+    new Vec3f(0, 0, -1).rotate(this)
   }
 
   def up: Vec3f = {
-    return new Vec3f(0, 1, 0).rotate(this)
+    new Vec3f(0, 1, 0).rotate(this)
   }
 
   def down: Vec3f = {
-    return new Vec3f(0, -1, 0).rotate(this)
+    new Vec3f(0, -1, 0).rotate(this)
   }
 
   def right: Vec3f = {
-    return new Vec3f(1, 0, 0).rotate(this)
+    new Vec3f(1, 0, 0).rotate(this)
   }
 
   def left: Vec3f = {
-    return new Vec3f(-1, 0, 0).rotate(this)
+    new Vec3f(-1, 0, 0).rotate(this)
   }
 
   def length: Float = {
-    return Math.sqrt(x * x + y * y + z * z + w * w).asInstanceOf[Float]
+    Math.sqrt(x * x + y * y + z * z + w * w).asInstanceOf[Float]
   }
 
   def nlerp(dest: Quaternion, lerpFactor: Float, shortest: Boolean): Quaternion = {
     var correctedDest: Quaternion = dest
     if (shortest && this.dot(dest) < 0) correctedDest = new Quaternion(-dest.x, -dest.y, -dest.z, -dest.w)
-    return correctedDest.sub(this).mul(lerpFactor).add(this).normalize
+    correctedDest.sub(this).mul(lerpFactor).add(this).normalize
   }
 
   def slerp(dest: Quaternion, lerpFactor: Float, shortest: Boolean): Quaternion = {
@@ -69,19 +76,19 @@ class Quaternion(var x: Float = 0, var y: Float = 0, var z: Float = 0, var w: Fl
     val invSin: Float = 1.0f / sin
     val srcFactor: Float = (Math.sin((1.0f - lerpFactor) * angle) * invSin).asInstanceOf[Float]
     val destFactor: Float = (Math.sin((lerpFactor) * angle) * invSin).asInstanceOf[Float]
-    return this.mul(srcFactor).add(correctedDest.mul(destFactor)).normalize
+    this.mul(srcFactor).add(correctedDest.mul(destFactor)).normalize
   }
 
   def sub(r: Quaternion): Quaternion = {
-    return new Quaternion(x - r.x, y - r.y, z - r.z, w - r.w)
+    new Quaternion(x - r.x, y - r.y, z - r.z, w - r.w)
   }
 
   def add(r: Quaternion): Quaternion = {
-    return new Quaternion(x + r.x, y + r.y, z + r.z, w + r.w)
+    new Quaternion(x + r.x, y + r.y, z + r.z, w + r.w)
   }
 
   def dot(r: Quaternion): Float = {
-    return x * r.x + y * r.y + z * r.z + w * r.w
+    x * r.x + y * r.y + z * r.z + w * r.w
   }
 
   def normalize: Quaternion = {
@@ -90,15 +97,15 @@ class Quaternion(var x: Float = 0, var y: Float = 0, var z: Float = 0, var w: Fl
     y /= l
     z /= l
     w /= l
-    return this
+    this
   }
 
   def conjugate: Quaternion = {
-    return new Quaternion(-x, -y, -z, w)
+    new Quaternion(-x, -y, -z, w)
   }
 
   def mul(d: Float): Quaternion = {
-    return new Quaternion(x * d, y * d, z * d, w * d)
+    new Quaternion(x * d, y * d, z * d, w * d)
   }
 
   def mul(r: Quaternion): Quaternion = {
@@ -106,7 +113,7 @@ class Quaternion(var x: Float = 0, var y: Float = 0, var z: Float = 0, var w: Fl
     val x_ : Float = x * r.w + w * r.x + y * r.z - z * r.y
     val y_ : Float = y * r.w + w * r.y + z * r.x - x * r.z
     val z_ : Float = z * r.w + w * r.z + x * r.y - y * r.x
-    return new Quaternion(x_, y_, z_, w_)
+    new Quaternion(x_, y_, z_, w_)
   }
 
   def mul(r: Vec3f): Quaternion = {
@@ -114,7 +121,7 @@ class Quaternion(var x: Float = 0, var y: Float = 0, var z: Float = 0, var w: Fl
     val x_ : Float = w * r.x + y * r.z - z * r.y
     val y_ : Float = w * r.y + z * r.x - x * r.z
     val z_ : Float = w * r.z + x * r.y - y * r.x
-    return new Quaternion(x_, y_, z_, w_)
+    new Quaternion(x_, y_, z_, w_)
   }
 
 }

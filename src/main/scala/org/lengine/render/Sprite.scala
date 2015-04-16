@@ -1,6 +1,6 @@
 package org.lengine.render
 
-import org.lengine.maths.{Transform, Vec2f}
+import org.lengine.maths._
 
 class Sprite(var texture: Texture) {
 
@@ -11,6 +11,8 @@ class Sprite(var texture: Texture) {
 
   private val transform: Transform = new Transform
   private val vertexArray = new VertexArray
+
+  setCenter(width/2f, height/2f)
 
   vertexArray.defineVertex(new Vec2f, new Vec2f)
   vertexArray.defineVertex(new Vec2f(1), new Vec2f(1))
@@ -26,7 +28,7 @@ class Sprite(var texture: Texture) {
   vertexArray.defineIndex(3)
   vertexArray.compile()
 
-  def render(): Unit = {
+  def render(delta: Float): Unit = {
     transform.scale.x = width
     transform.scale.y = height
     RenderEngine.setTransformMatrix(transform.toMatrix)
@@ -38,5 +40,25 @@ class Sprite(var texture: Texture) {
   def setPos(x: Float, y: Float): Unit = {
     transform.pos.x = x
     transform.pos.y = y
+  }
+
+  def setAngle(value: Float): Unit = {
+    transform.angle = value
+  }
+
+  def getAngle(): Float = {
+    transform.angle
+  }
+
+  def getCenter(): Vec2f = {
+    transform.center
+  }
+
+  def setCenter(x: Float, y: Float): Unit = {
+    transform.center.set(x, y)
+  }
+
+  def setCenter(c: Vec2f): Unit = {
+    transform.center.set(c)
   }
 }

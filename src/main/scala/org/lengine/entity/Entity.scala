@@ -8,9 +8,9 @@ abstract class Entity {
   private val pos: Vec2f = new Vec2f
   private var angle: Float = 0
 
-  def render: Unit
+  def render(delta: Float): Unit
 
-  def update: Unit
+  def update(delta: Float): Unit
 
   def init: Unit
 

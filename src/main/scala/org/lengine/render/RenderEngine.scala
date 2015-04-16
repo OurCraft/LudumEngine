@@ -2,9 +2,11 @@ package org.lengine.render
 
 import org.lengine.maths.Mat4f
 import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL11._
 
 object RenderEngine {
 
+  private val init: Mat4f = new Mat4f().identity
   var displayWidth: Int = 0
   var displayHeight: Int = 0
   var shader: Shader = _
@@ -43,5 +45,18 @@ object RenderEngine {
     if(shader != null) {
       shader.setUniformMat4("transform", mat)
     }
+  }
+
+  def initTransform = {
+    setTransformMatrix(init)
+  }
+
+  def enableTextures = {
+    glEnable(GL_TEXTURE_2D)
+  }
+
+  def clearColorBuffer(r: Float, g: Float, b: Float, a: Float): Unit = {
+    glColor4f(r,g,b,a)
+    glClear(GL_COLOR_BUFFER_BIT)
   }
 }

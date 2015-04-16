@@ -18,17 +18,30 @@ object GameTest extends GameBase("test") {
     testSprite = new Sprite("assets/textures/test.png")
     testSprite.width /= 2f
     testSprite.height /= 2f
+    testSprite.getCenter() /= 2f
   }
 
-  override def update: Unit = {
-    level update
+  override def update(delta: Float): Unit = {
+    level update(delta)
   }
 
-  override def render: Unit = {
-    level.render
-    testSprite.setPos(Mouse.getX, Mouse.getY)
-    testSprite.render
+  override def render(delta: Float): Unit = {
+    level.render(delta)
+
+    testSprite.render(delta)
   }
 
   override def getBaseHeight: Int = 640
+
+  override def onScroll(x: Int, y: Int, dir: Int): Unit = {
+    testSprite.setAngle(testSprite.getAngle() + dir*0.25f)
+  }
+
+  override def onMouseMoved(x: Int, y: Int, dx: Int, dy: Int): Unit = {
+    testSprite.setPos(x-testSprite.getCenter().x, y-testSprite.getCenter().y)
+  }
+
+  override def onMousePressed(x: Int, y: Int, button: Int): Unit = {}
+
+  override def onMouseReleased(x: Int, y: Int, button: Int): Unit = {}
 }

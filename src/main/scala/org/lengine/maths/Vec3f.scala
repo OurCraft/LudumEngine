@@ -9,9 +9,9 @@ class Vec3f(var x: Float = 0, var y: Float = 0, var z: Float = 0) {
 
   def copy: Vec3f = new Vec3f(x,y,z)
 
-  def rotate(angle: Float, axis: Vec3f): Vec3f = {
-    val sinAngle: Float = Math.sin(-angle).asInstanceOf[Float]
-    val cosAngle: Float = Math.cos(-angle).asInstanceOf[Float]
+  def rotate(angle: Float, axis: Vec3f = Z3): Vec3f = {
+    val sinAngle: Float = Math.sin(-angle).toFloat
+    val cosAngle: Float = Math.cos(-angle).toFloat
     val naxis = axis.copy
     val cross: Vec3f = copy.cross(naxis * sinAngle)
     val mul: Vec3f = copy * cosAngle
@@ -60,15 +60,6 @@ class Vec3f(var x: Float = 0, var y: Float = 0, var z: Float = 0) {
   def set(other: Vec3f): Vec3f = {
     x = other.x
     y = other.y
-    this
-  }
-
-  def rotate(angle: Float): Vec3f = {
-    val l: Float = ~this
-    val nx: Float = (Math.cos(angle) * l).toFloat
-    val ny: Float = (-Math.sin(angle) * l).toFloat
-    x = nx
-    y = ny
     this
   }
 

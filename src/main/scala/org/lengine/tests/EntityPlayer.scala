@@ -3,7 +3,7 @@ package org.lengine.tests
 import org.lengine.entity.Entity
 
 class EntityPlayer extends Entity {
-  override def render: Unit = {
+  override def render(delta: Float): Unit = {
 
   }
 
@@ -11,7 +11,7 @@ class EntityPlayer extends Entity {
 
   }
 
-  override def update: Unit = {
+  override def update(delta: Float): Unit = {
 
   }
 }

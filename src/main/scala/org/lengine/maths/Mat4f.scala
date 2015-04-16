@@ -6,16 +6,17 @@ class Mat4f {
   private val data: Array[Float] = new Array[Float](4 * 4)
 
   def mul(other: Mat4f): Mat4f = {
-    for(i <- 0 until 3) {
-      for(j <- 0 until 3) {
+    val newMat = new Mat4f
+    for(i <- 0 until 4) {
+      for(j <- 0 until 4) {
         val firstRow: Float = get(i, 0) * other.get(0, j)
         val secondRow: Float = get(i, 1) * other.get(1, j)
         val thirdRow: Float = get(i, 2) * other.get(2, j)
         val fourthRow: Float = get(i, 3) * other.get(3, j)
-        set(i, j, firstRow + secondRow + thirdRow + fourthRow)
+        newMat.set(i, j, firstRow + secondRow + thirdRow + fourthRow)
       }
     }
-    this
+    newMat
   }
 
   def copy: Mat4f = {
@@ -55,14 +56,17 @@ class Mat4f {
     rotx.set(1, 2, -Math.sin(x).toFloat)
     rotx.set(2, 1, Math.sin(x).toFloat)
     rotx.set(2, 2, Math.cos(x).toFloat)
+
     roty.set(0, 0, Math.cos(y).toFloat)
     roty.set(0, 2, -Math.sin(y).toFloat)
     roty.set(2, 0, Math.sin(y).toFloat)
     roty.set(2, 2, Math.cos(y).toFloat)
+
     rotz.set(0, 0, Math.cos(z).toFloat)
     rotz.set(0, 1, -Math.sin(z).toFloat)
     rotz.set(1, 0, Math.sin(z).toFloat)
     rotz.set(1, 1, Math.cos(z).toFloat)
+
     set(rotz.mul(roty.mul(rotx)))
   }
 
@@ -108,7 +112,7 @@ class Mat4f {
   }
 
   def set(other: Mat4f): Mat4f = {
-    for(i <- 0 until data.length) {
+    for(i <- 0 until 16) {
       data(i) = other.data(i)
     }
     this
@@ -124,7 +128,7 @@ class Mat4f {
   }
 
   def all(value: Float): Mat4f = {
-    for(i <- 0 until data.length) {
+    for(i <- 0 until 16) {
       data(i) = value
     }
     this
@@ -132,17 +136,22 @@ class Mat4f {
 
   def rotation(forward: Vec3f, up: Vec3f, right: Vec3f): Mat4f = {
     all(0)
+
     set(0, 0, right.x)
     set(0, 1, right.y)
     set(0, 2, right.z)
+
     set(1, 0, up.x)
     set(1, 1, up.y)
     set(1, 2, up.z)
+
     set(2, 0, forward.x)
     set(2, 1, forward.y)
     set(2, 2, forward.z)
+
     set(3, 3, 1)
-    return this
+
+    this
   }
 
 }

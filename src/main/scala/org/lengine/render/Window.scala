@@ -13,7 +13,10 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
 
   def getTitle = title
 
-  def setTitle(newTitle: String) = title = newTitle
+  def setTitle(newTitle: String) = {
+    title = newTitle
+    Display.setTitle(title)
+  }
 
   def setWidth(newWidth: Int) = {
     width = newWidth
@@ -29,6 +32,7 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
 
   def create = {
     updateSize
+    Display.setTitle(title)
     Display.create
   }
 
@@ -50,7 +54,6 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
   def shouldClose = Display.isCloseRequested
 
   def refresh: Unit = {
-    Display.sync(60)
     Display.update
   }
 
