@@ -1,21 +1,19 @@
 package org.lengine
 
 import java.io.File
+import java.util.{Map, HashMap}
 
 import org.lengine.render.{RenderEngine, Window, Texture}
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
-import org.lwjgl.input.Mouse
+import org.lwjgl.input.{Keyboard, Mouse}
 import org.lwjgl.opengl.GL11._
 
 abstract class GameBase(id: String) extends App {
 
-  initOpenGL
-  initGame
-  loop
-
   var fps: Int = _
   var frames: Int = _
   var window: Window = null
+  val keymap: Map[Int, Boolean] = new HashMap[Int, Boolean]
 
   def getBaseHeight: Int
 
@@ -54,6 +52,17 @@ abstract class GameBase(id: String) extends App {
 
   def onMouseReleased(x: Int, y: Int, button: Int): Unit
 
+  def onKeyPressed(keyCode: Int, char: Char): Unit
+
+  def onKeyReleased(keyCode: Int, char: Char): Unit
+
+  def isKeyPressed(keycode: Int): Boolean = {
+    if(keymap.containsKey(keycode))
+      keymap.get(keycode)
+    else
+      false
+  }
+
   def pollEvents(d: Float) = {
     while(Mouse.next) {
       val dwheel: Int = Math.signum(Mouse.getEventDWheel).toInt
@@ -74,6 +83,18 @@ abstract class GameBase(id: String) extends App {
         }
       } else {
         onMouseMoved(x, y, dx, dy)
+      }
+    }
+
+    while(Keyboard.next) {
+      val keystate: Boolean = Keyboard.getEventKeyState
+      val keyCode: Int = Keyboard.getEventKey
+      val char: Char = Keyboard.getEventCharacter
+      keymap.put(keyCode, keystate)
+      if(keystate) {
+        onKeyPressed(keyCode, char)
+      } else {
+        onKeyReleased(keyCode, char)
       }
     }
   }
@@ -121,4 +142,8 @@ abstract class GameBase(id: String) extends App {
   implicit def toTexture(texture: String): Texture = {
     new Texture(texture)
   }
+
+  initOpenGL
+  initGame
+  loop
 }

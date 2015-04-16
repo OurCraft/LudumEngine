@@ -3,7 +3,7 @@ package org.lengine
 import org.lengine.level.Level
 import org.lengine.render.Sprite
 import org.lengine.tests.EntityPlayer
-import org.lwjgl.input.Mouse
+import org.lwjgl.input.{Keyboard, Mouse}
 
 object GameTest extends GameBase("test") {
 
@@ -18,16 +18,18 @@ object GameTest extends GameBase("test") {
     testSprite = new Sprite("assets/textures/test.png")
     testSprite.width /= 2f
     testSprite.height /= 2f
-    testSprite.getCenter() /= 2f
+    testSprite.getCenter /= 2f
   }
 
   override def update(delta: Float): Unit = {
     level update(delta)
+    if(isKeyPressed(Keyboard.KEY_SPACE)) {
+      testSprite.setAngle(testSprite.getAngle()+0.025f)
+    }
   }
 
   override def render(delta: Float): Unit = {
     level.render(delta)
-
     testSprite.render(delta)
   }
 
@@ -44,4 +46,8 @@ object GameTest extends GameBase("test") {
   override def onMousePressed(x: Int, y: Int, button: Int): Unit = {}
 
   override def onMouseReleased(x: Int, y: Int, button: Int): Unit = {}
+
+  override def onKeyPressed(keyCode: Int, char: Char): Unit = {}
+
+  override def onKeyReleased(keyCode: Int, char: Char): Unit = {}
 }
