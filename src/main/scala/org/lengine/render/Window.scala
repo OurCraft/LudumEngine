@@ -38,9 +38,7 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
 
   def setPos(x: Int, y: Int) = Display.setLocation(x, y)
 
-  def getPos: (Int, Int) = {
-    (Display.getX, Display.getY)
-  }
+  def getPos: (Int, Int) = (Display.getX, Display.getY)
 
   def setResizable(_resizable: Boolean) = {
     Display.setResizable(_resizable)
@@ -53,9 +51,7 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
 
   def shouldClose = Display.isCloseRequested
 
-  def refresh: Unit = {
-    Display.update
-  }
+  def refresh: Unit = Display.update
 
   def dispose: Unit = Display.destroy
 }

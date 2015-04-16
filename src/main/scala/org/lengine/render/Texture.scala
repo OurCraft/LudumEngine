@@ -26,6 +26,8 @@ object TextureRegistry {
   }
 }
 
+class TextureRegion(val minU: Float = 0, val minV: Float = 0, val maxU: Float = 1, val maxV: Float = 1) {}
+
 class TextureData(path: String) {
   private val input: InputStream = getClass.getResourceAsStream("/"+path)
   private val image: BufferedImage = ImageIO.read(input)

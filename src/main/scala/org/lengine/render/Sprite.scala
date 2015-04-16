@@ -2,7 +2,7 @@ package org.lengine.render
 
 import org.lengine.maths._
 
-class Sprite(var texture: Texture) {
+class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion) {
 
 
   var width: Float = texture.getWidth
@@ -13,10 +13,10 @@ class Sprite(var texture: Texture) {
 
   setCenter(width/2f, height/2f)
 
-  vertexArray.defineVertex(new Vec2f, new Vec2f)
-  vertexArray.defineVertex(new Vec2f(1), new Vec2f(1))
-  vertexArray.defineVertex(new Vec2f(1,1), new Vec2f(1,1))
-  vertexArray.defineVertex(new Vec2f(0,1), new Vec2f(0,1))
+  vertexArray.defineVertex(new Vec2f, new Vec2f(region.minU, region.minV))
+  vertexArray.defineVertex(new Vec2f(1), new Vec2f(region.maxU, region.minV))
+  vertexArray.defineVertex(new Vec2f(1,1), new Vec2f(region.maxU, region.maxV))
+  vertexArray.defineVertex(new Vec2f(0,1), new Vec2f(region.minU, region.maxV))
 
   vertexArray.defineIndex(1)
   vertexArray.defineIndex(0)

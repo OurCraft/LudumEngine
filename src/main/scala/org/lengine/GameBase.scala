@@ -3,7 +3,7 @@ package org.lengine
 import java.io.File
 import java.util.{Map, HashMap}
 
-import org.lengine.render.{RenderEngine, Window, Texture}
+import org.lengine.render.{TextureAtlas, RenderEngine, Window, Texture}
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
 import org.lwjgl.input.{Keyboard, Mouse}
 import org.lwjgl.opengl.GL11._
