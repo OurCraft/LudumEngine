@@ -4,6 +4,7 @@ import java.io.File
 import java.util.{Map, HashMap}
 
 import org.lengine.render.{TextureAtlas, RenderEngine, Window, Texture}
+import org.lengine.sound.SoundManager
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
 import org.lwjgl.input.{Keyboard, Mouse}
 import org.lwjgl.opengl.GL11._
@@ -14,6 +15,7 @@ abstract class GameBase(id: String) extends App {
   var frames: Int = _
   var window: Window = null
   val keymap: Map[Int, Boolean] = new HashMap[Int, Boolean]
+  var soundManager: SoundManager = _
 
   def getBaseHeight: Int
 
@@ -29,6 +31,10 @@ abstract class GameBase(id: String) extends App {
     window.create
 
     RenderEngine.setViewportSize(width, height)
+  }
+
+  def initOpenAL: Unit = {
+    soundManager = new SoundManager
   }
 
   def initGame: Unit
@@ -87,11 +93,11 @@ abstract class GameBase(id: String) extends App {
     }
 
     while(Keyboard.next) {
-      val keystate: Boolean = Keyboard.getEventKeyState
+      val keyState: Boolean = Keyboard.getEventKeyState
       val keyCode: Int = Keyboard.getEventKey
       val char: Char = Keyboard.getEventCharacter
-      keymap.put(keyCode, keystate)
-      if(keystate) {
+      keymap.put(keyCode, keyState)
+      if(keyState) {
         onKeyPressed(keyCode, char)
       } else {
         onKeyReleased(keyCode, char)
@@ -136,6 +142,8 @@ abstract class GameBase(id: String) extends App {
         frames = 0
       }
       if (window.shouldClose) running = false
+
+      soundManager.update()
     }
   }
 
@@ -144,6 +152,7 @@ abstract class GameBase(id: String) extends App {
   }
 
   initOpenGL
+  initOpenAL
   initGame
   loop
 }

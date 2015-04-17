@@ -2,6 +2,7 @@ package org.lengine
 
 import org.lengine.level.Level
 import org.lengine.render.{TextureAtlas, FontRenderer, Sprite}
+import org.lengine.sound.SoundManager
 import org.lengine.tests.EntityPlayer
 import org.lwjgl.input.{Keyboard, Mouse}
 
@@ -30,6 +31,7 @@ object GameTest extends GameBase("test") {
     testSprite2.getCenter /= 4f
 
     fontRenderer = new FontRenderer(new TextureAtlas("assets/textures/font.png", 16, 16))
+    soundManager.play("test.ogg")
   }
 
   override def update(delta: Float): Unit = {
