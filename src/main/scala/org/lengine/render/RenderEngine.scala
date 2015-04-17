@@ -16,9 +16,13 @@ object RenderEngine {
   val baseShader: Shader = new Shader("assets/shaders/base")
   var time: Float = _
 
-  setShader(baseShader)
-  setTransformMatrix(new Mat4f().identity)
-  setProjectionMatrix(new Mat4f().orthographic(0,1000,0,1000))
+  reset
+
+  def reset: Unit = {
+    setShader(baseShader)
+    setTransformMatrix(new Mat4f().identity)
+    setViewportSize(displayWidth, displayHeight)
+  }
 
   def update(delta: Float) = {
       time+=delta
@@ -26,16 +30,16 @@ object RenderEngine {
 
   def setShader(newShader: Shader): Unit = {
     shader = newShader
-    if(shader.getUniformLoc("time") >= 0) {
-      shader.setUniformf("time", time)
-    }
-
-    if(shader.getUniformLoc("screenSize") >= 0) {
-      shader.setUniform2f("screenSize", displayWidth, displayHeight)
-    }
 
     if(shader != null) {
       shader.bind
+      if(shader.getUniformLoc("time") >= 0) {
+        shader.setUniformf("time", time)
+      }
+
+      if(shader.getUniformLoc("screenSize") != -1) {
+        shader.setUniform2f("screenSize", displayWidth, displayHeight)
+      }
     }
     else {
       GL20.glUseProgram(0)

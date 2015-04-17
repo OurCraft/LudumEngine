@@ -63,7 +63,7 @@ abstract class GameBase(id: String) extends App {
     val blitShader: Shader = if(postProcessShader == null) RenderEngine.baseShader else postProcessShader
     RenderEngine.setShader(blitShader)
     RenderEngine.setTransformMatrix(new Mat4f().identity)
-    //    RenderEngine.setProjectionMatrix(new Mat4f().identity)
+    RenderEngine.setProjectionMatrix(new Mat4f().orthographic(0, RenderEngine.displayWidth, 0, RenderEngine.displayHeight))
     RenderEngine.clearColorBuffer(0,0,1,1)
 
     GL13.glActiveTexture(GL13.GL_TEXTURE0)
@@ -71,6 +71,9 @@ abstract class GameBase(id: String) extends App {
 
     renderTarget.quickRender
     glBindTexture(GL_TEXTURE_2D, 0)
+    blitShader.unbind
+
+    RenderEngine.setShader(RenderEngine.baseShader)
   }
 
   def initOpenAL: Unit = {
@@ -168,6 +171,7 @@ abstract class GameBase(id: String) extends App {
         delta -= 1
       }
 
+      RenderEngine.reset
       glEnable(GL_BLEND)
       glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
       framebuffer.bind
