@@ -8,12 +8,13 @@ import org.lengine.utils.IOUtils
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20._
 
-class Shader(shaderBasePath: String) {
+class Shader(val vertexPath: String, val fragPath: String) {
+
+  def this(shaderBasePath: String) {
+    this(shaderBasePath+".vsh", shaderBasePath+".fsh")
+  }
 
   val uniforms: Map[String, Int] = new HashMap[String, Int]
-
-  val vertexPath: String = shaderBasePath+".vsh"
-  val fragPath: String = shaderBasePath+".fsh"
   val vertexContent: String = IOUtils.read(vertexPath, "UTF-8")
   val fragContent: String = IOUtils.read(fragPath, "UTF-8")
 

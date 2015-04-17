@@ -1,15 +1,15 @@
 package org.lengine.sound
 
 import java.net.URL
-import java.util
+import java.util.{Map, HashMap, Iterator}
 
 import eu.thog92.lwjall.ALSoundProvider
 import eu.thog92.lwjall.api.{AbstractSource, ISoundProvider}
 
 class SoundManager {
 
-  val activeSounds: java.util.Map[String, AbstractSource] = new util.HashMap()
-  val sourcesCache: java.util.Map[String, AbstractSource] = new util.HashMap()
+  val activeSounds: Map[String, AbstractSource] = new HashMap
+  val sourcesCache: Map[String, AbstractSource] = new HashMap
   val soundProvider: ISoundProvider = new ALSoundProvider
 
 
@@ -27,7 +27,7 @@ class SoundManager {
 
   def play(id: String): AbstractSource = {
     val url = ClassLoader.getSystemResource("assets/sounds/" + id)
-    this.play(url, id);
+    this.play(url, id)
   }
 
   def stop(id: String): Unit = {
@@ -42,6 +42,12 @@ class SoundManager {
 
 
   def update(): Unit = {
-    activeSounds.values().toArray(new Array[AbstractSource](activeSounds.size())).foreach(f => if (soundProvider.isPlaying(f.getName)) f.update())
+    val it: Iterator[AbstractSource] = activeSounds.values().iterator()
+    while(it.hasNext) {
+      val source: AbstractSource = it.next()
+      if(soundProvider.isPlaying(source.getName)) {
+        source.update
+      }
+    }
   }
 }

@@ -6,19 +6,34 @@ import org.lwjgl.opengl.GL11._
 
 object RenderEngine {
 
+
   private val init: Mat4f = new Mat4f().identity
   var displayWidth: Int = 0
   var displayHeight: Int = 0
   var shader: Shader = _
   var transformMatrix: Mat4f = _
   var projectionMatrix: Mat4f = _
+  val baseShader: Shader = new Shader("assets/shaders/base")
+  var time: Float = _
 
-  setShader(new Shader("assets/shaders/base"))
+  setShader(baseShader)
   setTransformMatrix(new Mat4f().identity)
   setProjectionMatrix(new Mat4f().orthographic(0,1000,0,1000))
 
+  def update(delta: Float) = {
+      time+=delta
+  }
+
   def setShader(newShader: Shader): Unit = {
     shader = newShader
+    if(shader.getUniformLoc("time") >= 0) {
+      shader.setUniformf("time", time)
+    }
+
+    if(shader.getUniformLoc("screenSize") >= 0) {
+      shader.setUniform2f("screenSize", displayWidth, displayHeight)
+    }
+
     if(shader != null) {
       shader.bind
     }

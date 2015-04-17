@@ -45,6 +45,7 @@ object GameTest extends GameBase("test") {
     level.render(delta)
     testSprite.render(delta)
     testSprite2.render(delta)
+    fontRenderer.renderString("Test string 0123456789abcdefghijklmnopqrstuvwxyz",0,0,0xFF00FFFF,2)
   }
 
   override def getBaseHeight: Int = 640

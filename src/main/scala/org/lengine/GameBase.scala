@@ -3,11 +3,13 @@ package org.lengine
 import java.io.File
 import java.util.{Map, HashMap}
 
-import org.lengine.render.{TextureAtlas, RenderEngine, Window, Texture}
+import org.lengine.maths.{Mat4f, Vec2f}
+import org.lengine.render._
 import org.lengine.sound.SoundManager
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
 import org.lwjgl.input.{Keyboard, Mouse}
 import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.GL13
 
 abstract class GameBase(id: String) extends App {
 
@@ -16,6 +18,9 @@ abstract class GameBase(id: String) extends App {
   var window: Window = null
   val keymap: Map[Int, Boolean] = new HashMap[Int, Boolean]
   var soundManager: SoundManager = _
+  var framebuffer: Framebuffer = null
+  var renderTarget: VertexArray = null
+  var postProcessShader: Shader = null
 
   def getBaseHeight: Int
 
@@ -31,6 +36,41 @@ abstract class GameBase(id: String) extends App {
     window.create
 
     RenderEngine.setViewportSize(width, height)
+    initFramebuffer(width, height)
+  }
+
+
+  def initFramebuffer(w: Int, h: Int): Unit = {
+    framebuffer = new Framebuffer(w, h)
+    renderTarget = new VertexArray
+    renderTarget.defineVertex(new Vec2f(0,0), new Vec2f)
+    renderTarget.defineVertex(new Vec2f(w,0), new Vec2f(1))
+    renderTarget.defineVertex(new Vec2f(w,h), new Vec2f(1,1))
+    renderTarget.defineVertex(new Vec2f(0,h), new Vec2f(0,1))
+
+    renderTarget.defineIndex(1)
+    renderTarget.defineIndex(0)
+    renderTarget.defineIndex(2)
+
+    renderTarget.defineIndex(2)
+    renderTarget.defineIndex(0)
+    renderTarget.defineIndex(3)
+
+    renderTarget.compile
+  }
+
+  private def vomitFramebufferOnScreen = {
+    val blitShader: Shader = if(postProcessShader == null) RenderEngine.baseShader else postProcessShader
+    RenderEngine.setShader(blitShader)
+    RenderEngine.setTransformMatrix(new Mat4f().identity)
+    //    RenderEngine.setProjectionMatrix(new Mat4f().identity)
+    RenderEngine.clearColorBuffer(0,0,1,1)
+
+    GL13.glActiveTexture(GL13.GL_TEXTURE0)
+    glBindTexture(GL_TEXTURE_2D, framebuffer.colorBufferID)
+
+    renderTarget.quickRender
+    glBindTexture(GL_TEXTURE_2D, 0)
   }
 
   def initOpenAL: Unit = {
@@ -128,9 +168,18 @@ abstract class GameBase(id: String) extends App {
         delta -= 1
       }
 
+      glEnable(GL_BLEND)
+      glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+      framebuffer.bind
       RenderEngine.clearColorBuffer(0,0,0,1)
       RenderEngine.enableTextures
-      render(ns / 1000000000.0f)
+
+      val deltaTime: Float = ns / 1000000000.0f
+      RenderEngine.update(deltaTime)
+      render(deltaTime)
+      framebuffer.unbind
+
+      vomitFramebufferOnScreen
       window.refresh
 
       frames += 1

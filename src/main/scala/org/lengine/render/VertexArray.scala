@@ -1,9 +1,10 @@
 package org.lengine.render
 
 import java.nio.{IntBuffer, FloatBuffer, ByteBuffer}
+import java.util
 import java.util.{ArrayList, List}
 
-import org.lengine.maths.{Vec3f, Vec2f}
+import org.lengine.maths.{Quaternion, Vec3f, Vec2f}
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL15._
@@ -14,9 +15,11 @@ class VertexArray {
 
   private val positions: List[Vec3f] = new ArrayList[Vec3f]
   private val texCoords: List[Vec2f] = new ArrayList[Vec2f]
+  private val colors: List[Quaternion] = new ArrayList[Quaternion]
   private val indices: List[Int] = new ArrayList[Int]
   private var posID: Int = _
   private var coordsID: Int = _
+  private var colorsID: Int = _
   private var indicesID: Int = _
   private var vao: Int = _
   private var size: Int = _
@@ -25,9 +28,10 @@ class VertexArray {
     defineVertex(pos.toVec3(), texCoord)
   }
 
-  def defineVertex(pos: Vec3f, texCoord: Vec2f): Unit = {
+  def defineVertex(pos: Vec3f, texCoord: Vec2f, color: Quaternion = new Quaternion(1,1,1,1)): Unit = {
     positions add pos
     texCoords add texCoord
+    colors add color
   }
 
   def defineIndex(indice: Int): Unit = {
@@ -35,13 +39,29 @@ class VertexArray {
   }
 
 
+  def toFloatBuffer4(list: List[Quaternion]): FloatBuffer = {
+    val n: Int = list.size
+    val buffer: FloatBuffer = BufferUtils.createFloatBuffer(n*4)
+    for(i <- 0 until n) {
+      val q: Quaternion = list.get(i)
+      buffer.put(q.x)
+      buffer.put(q.y)
+      buffer.put(q.z)
+      buffer.put(q.w)
+    }
+    buffer.flip()
+    buffer
+  }
+
   def compile(): Unit = {
     val posBuffer: FloatBuffer = toFloatBuffer3(positions)
     val coordBuffer: FloatBuffer = toFloatBuffer2(texCoords)
     val indiceBuffer: IntBuffer = toIntBuffer(indices)
+    val colorBuffer: FloatBuffer = toFloatBuffer4(colors)
     size = indices.size
     posID = glGenBuffers
     coordsID = glGenBuffers
+    colorsID = glGenBuffers
     indicesID = glGenBuffers
 
     vao = glGenVertexArrays
@@ -56,6 +76,11 @@ class VertexArray {
     glBufferData(GL_ARRAY_BUFFER, coordBuffer, GL_STATIC_DRAW)
     glVertexAttribPointer(ShaderConstants.TEXT_INDEX, 2, GL_FLOAT, false, 0, 0)
     glEnableVertexAttribArray(ShaderConstants.TEXT_INDEX)
+
+    glBindBuffer(GL_ARRAY_BUFFER, colorsID)
+    glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW)
+    glVertexAttribPointer(ShaderConstants.COLOR_INDEX, 4, GL_FLOAT, false, 0, 0)
+    glEnableVertexAttribArray(ShaderConstants.COLOR_INDEX)
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indiceBuffer, GL_STATIC_DRAW)
@@ -114,4 +139,8 @@ class VertexArray {
     buffer
   }
 
+  def quickRender = {
+    bind
+    render
+  }
 }

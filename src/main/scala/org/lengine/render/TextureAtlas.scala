@@ -19,7 +19,7 @@ class TextureAtlas(val texture: Texture, val tileWidth: Int, val tileHeight: Int
     }
   }
 
-  private def halfPixelCorrection(x: Int, y: Int): Vec2f = {
+  private def halfPixelCorrection(x: Float, y: Float): Vec2f = {
     val xpos: Float = x + .5f
     val ypos: Float = y + .5f
     val u: Float = xpos / texture.getWidth.toFloat

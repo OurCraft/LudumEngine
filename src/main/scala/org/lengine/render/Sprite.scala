@@ -30,10 +30,12 @@ class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion
   def render(delta: Float): Unit = {
     transform.scale.x = width
     transform.scale.y = height
+    val oldMatrix: Mat4f = RenderEngine.transformMatrix
     RenderEngine.setTransformMatrix(transform.toMatrix)
     texture.bind(0)
-    vertexArray.bind()
-    vertexArray.render()
+    vertexArray.quickRender
+
+    RenderEngine.setTransformMatrix(oldMatrix)
   }
 
   def setPos(x: Float, y: Float): Unit = {
