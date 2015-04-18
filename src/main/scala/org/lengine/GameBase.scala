@@ -17,6 +17,7 @@ abstract class GameBase(id: String) extends App {
   var frames: Int = _
   var window: Window = null
   val keymap: Map[Int, Boolean] = new HashMap[Int, Boolean]
+  val axisValues: Map[Int, Float] = new HashMap[Int, Float]
   var soundManager: SoundManager = _
   var framebuffer: Framebuffer = null
   var renderTarget: VertexArray = null
@@ -174,6 +175,13 @@ abstract class GameBase(id: String) extends App {
       val xAxis = Controllers.getEventXAxisValue
       val yAxis = Controllers.getEventYAxisValue
       if(Controllers.isEventAxis) {
+        if(xAxis == 0f && yAxis != 0f) {
+          axisValues.put(index, yAxis)
+        } else if(xAxis != 0f && yAxis == 0f) {
+          axisValues.put(index, xAxis)
+        } else {
+          axisValues.put(index, 0f)
+        }
         onAxisMoved(xAxis, yAxis, index, source)
       } else if(Controllers.isEventButton) {
         if(buttonState) {
@@ -187,6 +195,13 @@ abstract class GameBase(id: String) extends App {
         onPovYMoved(yAxis, index, source)
       }
     }
+  }
+
+  def getAxisValue(axisIndex: Int): Float = {
+    if(axisValues.containsKey(axisIndex))
+      axisValues.get(axisIndex)
+    else
+      0f
   }
 
   def loop: Unit = {
