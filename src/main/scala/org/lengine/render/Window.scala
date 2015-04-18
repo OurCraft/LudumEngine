@@ -6,7 +6,6 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
   private var resizable = false
 
   setResizable(false)
-  setVSync(true)
 
   def getWidth = width
 
@@ -44,10 +43,6 @@ class Window(var width: Int, var height: Int, var title: String = "OpenGL Window
   def setResizable(_resizable: Boolean) = {
     Display.setResizable(_resizable)
     resizable = _resizable
-  }
-
-  def setVSync(vSync: Boolean) = {
-    Display.setVSyncEnabled(vSync)
   }
 
   def isResizable = resizable

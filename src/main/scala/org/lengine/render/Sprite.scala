@@ -5,18 +5,18 @@ import org.lengine.maths._
 class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion) {
 
 
-  var width: Float = texture.getWidth
-  var height: Float = texture.getHeight
+  var width: Float = texture.getWidth * (region.maxU-region.minU)
+  var height: Float = texture.getHeight * (region.maxV-region.minV)
 
   private val transform: Transform = new Transform
   private val vertexArray = new VertexArray
 
   setCenter(width/2f, height/2f)
 
-  vertexArray.defineVertex(new Vec2f, new Vec2f(region.minU, region.minV))
-  vertexArray.defineVertex(new Vec2f(1), new Vec2f(region.maxU, region.minV))
-  vertexArray.defineVertex(new Vec2f(1,1), new Vec2f(region.maxU, region.maxV))
-  vertexArray.defineVertex(new Vec2f(0,1), new Vec2f(region.minU, region.maxV))
+  vertexArray.defineVertex(new Vec2f, new Vec2f(region.minU, region.maxV))
+  vertexArray.defineVertex(new Vec2f(1), new Vec2f(region.maxU, region.maxV))
+  vertexArray.defineVertex(new Vec2f(1,1), new Vec2f(region.maxU, region.minV))
+  vertexArray.defineVertex(new Vec2f(0,1), new Vec2f(region.minU, region.minV))
 
   vertexArray.defineIndex(1)
   vertexArray.defineIndex(0)

@@ -6,7 +6,7 @@ import org.lengine.entity.Entity
 
 class Level {
 
-  private val entities: List[Entity] = new ArrayList[Entity]
+  val entities: List[Entity] = new ArrayList[Entity]
   private val spawningList: List[Entity] = new ArrayList[Entity]
   private val despawningList: List[Entity] = new ArrayList[Entity]
 
