@@ -2,7 +2,7 @@ package org.lengine.render
 
 import org.lengine.maths._
 
-class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion) {
+class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion, var baseColor: Quaternion = new Quaternion(1,1,1,1)) {
 
 
   var width: Float = texture.getWidth * (region.maxU-region.minU)
@@ -13,10 +13,10 @@ class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion
 
   setCenter(width/2f, height/2f)
 
-  vertexArray.defineVertex(new Vec2f, new Vec2f(region.minU, region.maxV))
-  vertexArray.defineVertex(new Vec2f(1), new Vec2f(region.maxU, region.maxV))
-  vertexArray.defineVertex(new Vec2f(1,1), new Vec2f(region.maxU, region.minV))
-  vertexArray.defineVertex(new Vec2f(0,1), new Vec2f(region.minU, region.minV))
+  vertexArray.defineVertex(new Vec3f, new Vec2f(region.minU, region.maxV), baseColor)
+  vertexArray.defineVertex(new Vec3f(1), new Vec2f(region.maxU, region.maxV), baseColor)
+  vertexArray.defineVertex(new Vec3f(1,1), new Vec2f(region.maxU, region.minV), baseColor)
+  vertexArray.defineVertex(new Vec3f(0,1), new Vec2f(region.minU, region.minV), baseColor)
 
   vertexArray.defineIndex(1)
   vertexArray.defineIndex(0)
