@@ -7,7 +7,7 @@ import org.lengine.maths.{Mat4f, Vec2f}
 import org.lengine.render._
 import org.lengine.sound.SoundManager
 import org.lengine.utils.{SystemUtils, LWJGLSetup}
-import org.lwjgl.input.{Keyboard, Mouse}
+import org.lwjgl.input.{Controller, Controllers, Keyboard, Mouse}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL13
 
@@ -111,6 +111,26 @@ abstract class GameBase(id: String) extends App {
       false
   }
 
+  def onAxisMoved(x: Float, y: Float, index: Int, source: Controller): Unit = {
+
+  }
+
+  def onButtonPressed(index: Int, source: Controller): Unit = {
+
+  }
+
+  def onButtonReleased(index: Int, source: Controller): Unit = {
+
+  }
+
+  def onPovYMoved(value: Float, index: Int, source: Controller): Unit = {
+
+  }
+
+  def onPovXMoved(value: Float, index: Int, source: Controller): Unit = {
+
+  }
+
   def pollEvents(d: Float) = {
     while(Mouse.next) {
       val dwheel: Int = Math.signum(Mouse.getEventDWheel).toInt
@@ -143,6 +163,27 @@ abstract class GameBase(id: String) extends App {
         onKeyPressed(keyCode, char)
       } else {
         onKeyReleased(keyCode, char)
+      }
+    }
+
+    while(Controllers.next) {
+      val buttonState = Controllers.getEventButtonState
+      val index = Controllers.getEventControlIndex
+      val source = Controllers.getEventSource
+      val xAxis = Controllers.getEventXAxisValue
+      val yAxis = Controllers.getEventYAxisValue
+      if(Controllers.isEventAxis) {
+        onAxisMoved(xAxis, yAxis, index, source)
+      } else if(Controllers.isEventButton) {
+        if(buttonState) {
+          onButtonPressed(index, source)
+        } else {
+          onButtonReleased(index, source)
+        }
+      } else if(Controllers.isEventPovX) {
+        onPovXMoved(xAxis, index, source)
+      } else if(Controllers.isEventPovX) {
+        onPovYMoved(yAxis, index, source)
       }
     }
   }
@@ -196,6 +237,8 @@ abstract class GameBase(id: String) extends App {
       if (window.shouldClose) running = false
 
       soundManager.update()
+
+      Thread.sleep(5)
     }
   }
 
