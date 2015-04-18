@@ -75,7 +75,7 @@ object RenderEngine {
   }
 
   def clearColorBuffer(r: Float, g: Float, b: Float, a: Float): Unit = {
-    glColor4f(r,g,b,a)
+    glClearColor(r,g,b,a)
     glClear(GL_COLOR_BUFFER_BIT)
   }
 }
