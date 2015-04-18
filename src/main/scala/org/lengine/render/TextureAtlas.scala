@@ -14,8 +14,8 @@ class TextureAtlas(val texture: Texture, val tileWidth: Int, val tileHeight: Int
       val minUV: Vec2f = halfPixelCorrection(x*tileWidth, y*tileHeight)
       val maxUV: Vec2f = halfPixelCorrection((x+1)*tileWidth, (y+1)*tileHeight)
       val region: TextureRegion = new TextureRegion(minUV.x, minUV.y, maxUV.x, maxUV.y)
-      regions(x+y*tileWidth) = region
-      sprites(x+y*tileWidth) = new Sprite(texture, region)
+      regions(x+y*xFrequency) = region
+      sprites(x+y*xFrequency) = new Sprite(texture, region)
     }
   }
 
