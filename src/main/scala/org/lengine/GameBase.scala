@@ -34,6 +34,7 @@ abstract class GameBase(id: String) extends App {
     window = new Window(width, height, id)
     window.create
 
+    Controllers.create
     RenderEngine.setViewportSize(width, height)
     initFramebuffer(width, height)
   }
