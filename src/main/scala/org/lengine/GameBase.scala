@@ -113,7 +113,7 @@ abstract class GameBase(id: String) extends App {
       false
   }
 
-  def onAxisMoved(x: Float, y: Float, index: Int, source: Controller): Unit = {
+  def onAxisMoved(value: Float, index: Int, source: Controller): Unit = {
 
   }
 
@@ -175,14 +175,8 @@ abstract class GameBase(id: String) extends App {
       val xAxis = Controllers.getEventXAxisValue
       val yAxis = Controllers.getEventYAxisValue
       if(Controllers.isEventAxis) {
-        if(xAxis == 0f && yAxis != 0f) {
-          axisValues.put(index, yAxis)
-        } else if(xAxis != 0f && yAxis == 0f) {
-          axisValues.put(index, xAxis)
-        } else {
-          axisValues.put(index, 0f)
-        }
-        onAxisMoved(xAxis, yAxis, index, source)
+        axisValues.put(index, source.getAxisValue(index))
+        onAxisMoved(source.getAxisValue(index), index, source)
       } else if(Controllers.isEventButton) {
         if(buttonState) {
           onButtonPressed(index, source)
