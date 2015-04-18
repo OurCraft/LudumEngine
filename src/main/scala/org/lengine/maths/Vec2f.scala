@@ -1,10 +1,21 @@
 package org.lengine.maths
 
 object NULL2 extends Vec2f
-object X2 extends Vec2f(1)
+object X2 extends Vec2f(1,0)
 object Y2 extends Vec2f(0,1)
 
 class Vec2f(var x: Float = 0, var y: Float = 0) {
+  def norm(): Vec2f = {
+    if(isNull())
+      this
+    else {
+      val l = ~this
+      x /= l
+      y /= l
+      this
+    }
+  }
+
   def toVec3(): Vec3f = new Vec3f(x,y,0)
 
 
