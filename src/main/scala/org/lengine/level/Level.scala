@@ -29,6 +29,7 @@ class Level {
   }
 
   def spawn(entity: Entity): Unit = {
+    entity.level = this
     spawningList add entity
   }
 

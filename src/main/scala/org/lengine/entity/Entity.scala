@@ -1,5 +1,6 @@
 package org.lengine.entity
 
+import org.lengine.level.Level
 import org.lengine.maths.Vec2f
 
 abstract class Entity {
@@ -7,6 +8,7 @@ abstract class Entity {
   init
   private val pos: Vec2f = new Vec2f
   private var angle: Float = 0
+  var level: Level = _
 
   def render(delta: Float): Unit
 
