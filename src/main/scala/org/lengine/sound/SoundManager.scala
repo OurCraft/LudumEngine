@@ -8,6 +8,8 @@ import eu.thog92.lwjall.api.{AbstractSource, ISoundProvider}
 
 class SoundManager {
 
+
+
   val activeSounds: Map[String, AbstractSource] = new HashMap
   val sourcesCache: Map[String, AbstractSource] = new HashMap
   val soundProvider: ISoundProvider = new ALSoundProvider
@@ -49,5 +51,9 @@ class SoundManager {
         source.update
       }
     }
+  }
+
+  def cleanup() = {
+    soundProvider.cleanup()
   }
 }

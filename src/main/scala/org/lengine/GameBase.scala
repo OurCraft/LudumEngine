@@ -28,11 +28,10 @@ abstract class GameBase(id: String) extends App {
     val ratio: Double = 16.0/9.0
     val height: Int = getBaseHeight
     val width: Int = (height*ratio).toInt
-    val title = "OpenGL with Scala! :)"
 
     val gameFolder = SystemUtils.getGameFolder(s"LudumEngine/$id")
     LWJGLSetup.load(new File(gameFolder.getParentFile, "natives"))
-    window = new Window(width, height, title)
+    window = new Window(width, height, id)
     window.create
 
     RenderEngine.setViewportSize(width, height)
@@ -208,4 +207,5 @@ abstract class GameBase(id: String) extends App {
   initOpenAL
   initGame
   loop
+  soundManager.cleanup()
 }
