@@ -17,6 +17,8 @@ class Level {
     }
   }
 
+  def onEntityUpdate(entity: Entity, delta: Float) = {}
+
   def update(delta: Float): Unit = {
     entities addAll spawningList
     entities removeAll despawningList
@@ -25,6 +27,7 @@ class Level {
     for(i <- 0 until entities.size) {
       val entity: Entity = entities.get(i)
       entity.update(delta)
+      onEntityUpdate(entity, delta)
     }
   }
 
