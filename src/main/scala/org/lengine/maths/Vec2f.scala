@@ -167,6 +167,10 @@ class Vec2f(var x: Float = 0, var y: Float = 0) {
     new Vec2f(x / other._1, y / other._2)
   }
 
+  def ==(other: Vec2f): Boolean = {
+    x == other.x && y == other.y
+  }
+
   def len: Float = {
     val dx: Float = x*x
     val dy: Float = y*y
