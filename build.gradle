@@ -3,7 +3,7 @@ apply plugin: 'scala'
 sourceCompatibility = 1.8
 
 // Maven Artefacts Info
-group = "org.c1"
+group = "org.lengine"
 archivesBaseName = 'LudumEngine'
 
 //IDE
