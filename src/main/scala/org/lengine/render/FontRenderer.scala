@@ -34,6 +34,10 @@ private class TextData {
 }
 
 class FontRenderer(val atlas: TextureAtlas) {
+  def getWidth(s: String) = {
+    s.length * (16f-4f)
+  }
+
 
   private val cache: Map[TextData, VertexArray] = new HashMap[TextData, VertexArray]
 
