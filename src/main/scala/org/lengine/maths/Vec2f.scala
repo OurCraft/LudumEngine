@@ -5,6 +5,10 @@ object X2 extends Vec2f(1,0)
 object Y2 extends Vec2f(0,1)
 
 class Vec2f(var x: Float = 0, var y: Float = 0) {
+  def lerp(other: Vec2f, factor: Float): Vec2f = {
+    new Vec2f(x * (1f-factor) + other.x * factor, y * (1f-factor) + other.y * factor)
+  }
+
   def norm(): Vec2f = {
     if(isNull())
       this
