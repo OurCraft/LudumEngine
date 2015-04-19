@@ -22,6 +22,7 @@ abstract class GameBase(id: String) extends App {
   var framebuffer: Framebuffer = null
   var renderTarget: VertexArray = null
   var postProcessShader: Shader = null
+  private val gameFolder = SystemUtils.getGameFolder(s"LudumEngine/$id")
 
   def getBaseHeight: Int
 
@@ -30,7 +31,6 @@ abstract class GameBase(id: String) extends App {
     val height: Int = getBaseHeight
     val width: Int = (height*ratio).toInt
 
-    val gameFolder = SystemUtils.getGameFolder(s"LudumEngine/$id")
     LWJGLSetup.load(new File(gameFolder.getParentFile, "natives"))
     window = new Window(width, height, id)
     window.create
@@ -251,6 +251,8 @@ abstract class GameBase(id: String) extends App {
       Thread.sleep(5)
     }
   }
+
+  def getGameDir() : File = gameFolder
 
   implicit def toTexture(texture: String): Texture = {
     new Texture(texture)
