@@ -16,6 +16,7 @@ abstract class GameBase(id: String) extends App {
   var fps: Int = _
   var frames: Int = _
   var window: Window = null
+  val buttonStates: Map[Int, Boolean] = new HashMap[Int, Boolean]
   val keymap: Map[Int, Boolean] = new HashMap[Int, Boolean]
   val axisValues: Map[Int, Float] = new HashMap[Int, Float]
   var soundManager: SoundManager = _
@@ -180,8 +181,10 @@ abstract class GameBase(id: String) extends App {
       } else if(Controllers.isEventButton) {
         if(buttonState) {
           onButtonPressed(index, source)
+          buttonStates.put(index, true)
         } else {
           onButtonReleased(index, source)
+          buttonStates.put(index, false)
         }
       } else if(Controllers.isEventPovX) {
         onPovXMoved(xAxis, index, source)
@@ -196,6 +199,13 @@ abstract class GameBase(id: String) extends App {
       axisValues.get(axisIndex)
     else
       0f
+  }
+
+  def isButtonPressed(index: Int): Boolean = {
+    if(buttonStates.containsKey(index))
+      buttonStates.get(index)
+    else
+      false
   }
 
   def loop: Unit = {
