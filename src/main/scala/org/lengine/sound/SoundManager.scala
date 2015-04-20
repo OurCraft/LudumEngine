@@ -19,6 +19,7 @@ class SoundManager {
   val soundSystem = new SoundSystem
 
   def play(url: URL, id: String, loop: Boolean): Unit = {
+    soundSystem.removeSource(id)
     soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), loop, 0, 0, 0, 0, 0)
     soundSystem.setVolume(id, 0.5f)
     soundSystem.setPitch(id, 1f)
