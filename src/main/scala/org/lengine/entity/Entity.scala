@@ -5,10 +5,10 @@ import org.lengine.maths.Vec2f
 
 abstract class Entity {
 
-  init
   private val pos: Vec2f = new Vec2f
   private var angle: Float = 0
   var level: Level = _
+  init
 
   def render(delta: Float): Unit
 
