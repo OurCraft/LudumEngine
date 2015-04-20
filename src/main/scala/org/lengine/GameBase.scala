@@ -136,7 +136,7 @@ abstract class GameBase(id: String) extends App {
 
   def pollEvents(d: Float) = {
     while(Mouse.next) {
-      val dwheel: Int = Math.signum(Mouse.getEventDWheel).toInt
+      val dwheel: Int = Mouse.getEventDWheel
       val mouseButton: Int = Mouse.getEventButton
       val state: Boolean = Mouse.getEventButtonState
       val x: Int = Mouse.getEventX
@@ -145,7 +145,7 @@ abstract class GameBase(id: String) extends App {
       val dy: Int = Mouse.getEventDY
 
       if(dwheel != 0) {
-        onScroll(x, y, dwheel)
+        onScroll(x, y, Math.signum(dwheel).toInt)
       } else if(mouseButton != -1) {
         if(state) {
           onMousePressed(x, y, mouseButton)
