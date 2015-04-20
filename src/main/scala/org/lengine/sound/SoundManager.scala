@@ -18,8 +18,8 @@ class SoundManager {
   SoundSystemConfig.setCodec("wav", classOf[CodecWav])
   val soundSystem = new SoundSystem
 
-  def play(url: URL, id: String): Unit = {
-    soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), false, 0, 0, 0, 0, 0)
+  def play(url: URL, id: String, loop: Boolean): Unit = {
+    soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), loop, 0, 0, 0, 0, 0)
     soundSystem.setVolume(id, 0.5f)
     soundSystem.setPitch(id, 1f)
     soundSystem.play(id)
@@ -33,9 +33,9 @@ class SoundManager {
     sources.clear()
   }
 
-  def play(id: String): Unit = {
+  def play(id: String, loop: Boolean = false): Unit = {
     val url = ClassLoader.getSystemResource("assets/sounds/" + id)
-    this.play(url, id)
+    this.play(url, id, loop)
   }
 
   def stop(id: String): Unit = {
