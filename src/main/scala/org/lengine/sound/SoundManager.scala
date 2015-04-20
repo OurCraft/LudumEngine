@@ -1,14 +1,18 @@
 package org.lengine.sound
 
 import java.net.URL
-import java.util.{Map, HashMap, Iterator}
+import java.util.{ArrayList}
 
 import paulscode.sound.{SoundSystemConfig, SoundSystem}
 import paulscode.sound.codecs.{CodecWav, CodecJOgg}
 import paulscode.sound.libraries.LibraryLWJGLOpenAL
 
+import scala.collection.JavaConversions._
+
 class SoundManager {
 
+
+  val sources = new ArrayList[String]
   val soundSystem = new SoundSystem
   SoundSystemConfig.addLibrary(classOf[LibraryLWJGLOpenAL])
   SoundSystemConfig.setCodec("ogg", classOf[CodecJOgg])
@@ -19,6 +23,14 @@ class SoundManager {
     soundSystem.setVolume(id, 0.5f)
     soundSystem.setPitch(id, 1f)
     soundSystem.play(id)
+    sources.add(id)
+  }
+
+  def stopAll(): Unit = {
+    for(source <- sources) {
+      stop(source)
+    }
+    sources.clear()
   }
 
   def play(id: String): Unit = {

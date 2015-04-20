@@ -226,7 +226,6 @@ abstract class GameBase(id: String) extends App {
           pollEvents(deltaTime)
           polledInput = true
         }
-        soundManager.update()
         update(deltaTime)
         updates += 1
         delta -= 1
