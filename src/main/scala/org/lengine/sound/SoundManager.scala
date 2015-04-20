@@ -13,10 +13,10 @@ class SoundManager {
 
 
   val sources = new ArrayList[String]
-  val soundSystem = new SoundSystem
   SoundSystemConfig.addLibrary(classOf[LibraryLWJGLOpenAL])
   SoundSystemConfig.setCodec("ogg", classOf[CodecJOgg])
   SoundSystemConfig.setCodec("wav", classOf[CodecWav])
+  val soundSystem = new SoundSystem
 
   def play(url: URL, id: String): Unit = {
     soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), false, 0, 0, 0, 0, 0)
