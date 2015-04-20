@@ -3,57 +3,38 @@ package org.lengine.sound
 import java.net.URL
 import java.util.{Map, HashMap, Iterator}
 
-import eu.thog92.lwjall.ALSoundProvider
-import eu.thog92.lwjall.api.{AbstractSource, ISoundProvider}
+import paulscode.sound.{SoundSystemConfig, SoundSystem}
+import paulscode.sound.codecs.{CodecWav, CodecJOgg}
+import paulscode.sound.libraries.LibraryLWJGLOpenAL
 
 class SoundManager {
 
+  val soundSystem = new SoundSystem
+  SoundSystemConfig.addLibrary(classOf[LibraryLWJGLOpenAL])
+  SoundSystemConfig.setCodec("ogg", classOf[CodecJOgg])
+  SoundSystemConfig.setCodec("wav", classOf[CodecWav])
 
-
-  val activeSounds: Map[String, AbstractSource] = new HashMap
-  val sourcesCache: Map[String, AbstractSource] = new HashMap
-  val soundProvider: ISoundProvider = new ALSoundProvider
-
-
-  def play(url: URL, id: String): AbstractSource = {
-    if (activeSounds.containsKey(id))
-      return activeSounds.get(id)
-
-    val source: AbstractSource = soundProvider.newSource(id, url, true)
-
-    source.setGain(0.5F)
-    soundProvider.play(id)
-
-    activeSounds.put(id, source)
+  def play(url: URL, id: String): Unit = {
+    soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), false, 0, 0, 0, 0, 0)
+    soundSystem.setVolume(id, 0.5f)
+    soundSystem.setPitch(id, 1f)
+    soundSystem.play(id)
   }
 
-  def play(id: String): AbstractSource = {
+  def play(id: String): Unit = {
     val url = ClassLoader.getSystemResource("assets/sounds/" + id)
     this.play(url, id)
   }
 
   def stop(id: String): Unit = {
-    if(activeSounds.containsKey(id))
-      sourcesCache.put(id, activeSounds.remove(id))
+    soundSystem.stop(id)
   }
 
   def resume(id: String): Unit = {
-    if(!activeSounds.containsKey(id) && sourcesCache.containsKey(id))
-      activeSounds.put(id, sourcesCache.remove(id))
-  }
-
-
-  def update(): Unit = {
-    val it: Iterator[AbstractSource] = activeSounds.values().iterator()
-    while(it.hasNext) {
-      val source: AbstractSource = it.next()
-      if(soundProvider.isPlaying(source.getName)) {
-        source.update
-      }
-    }
+    soundSystem.play(id)
   }
 
   def cleanup() = {
-    soundProvider.cleanup()
+    soundSystem.cleanup()
   }
 }
