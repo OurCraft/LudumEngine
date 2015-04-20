@@ -17,7 +17,7 @@ class SoundManager {
   SoundSystemConfig.setCodec("ogg", classOf[CodecJOgg])
   SoundSystemConfig.setCodec("wav", classOf[CodecWav])
   val soundSystem = new SoundSystem
-
+  soundSystem.setMasterVolume(0.25f)
   def play(url: URL, id: String, loop: Boolean): Unit = {
     soundSystem.removeSource(id)
     soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), loop, 0, 0, 0, 0, 0)
