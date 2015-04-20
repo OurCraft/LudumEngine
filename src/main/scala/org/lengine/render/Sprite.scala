@@ -31,7 +31,7 @@ class Sprite(var texture: Texture, var region: TextureRegion = new TextureRegion
     transform.scale.x = width
     transform.scale.y = height
     val oldMatrix: Mat4f = RenderEngine.transformMatrix
-    RenderEngine.setTransformMatrix(transform.toMatrix)
+    RenderEngine.setTransformMatrix(oldMatrix.mul(transform.toMatrix))
     texture.bind(0)
     vertexArray.quickRender
 
