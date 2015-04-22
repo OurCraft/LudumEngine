@@ -1,53 +1,75 @@
 package org.lengine.sound
 
 import java.net.URL
-import java.util.{ArrayList}
+import java.util
 
-import paulscode.sound.{SoundSystemConfig, SoundSystem}
-import paulscode.sound.codecs.{CodecWav, CodecJOgg}
-import paulscode.sound.libraries.LibraryLWJGLOpenAL
+import eu.thog92.lwjall.ALSoundProvider
+import eu.thog92.lwjall.api.{AbstractSource, ISoundProvider}
 
 import scala.collection.JavaConversions._
 
 class SoundManager {
 
+  val activeSounds: java.util.Map[String, AbstractSource] = new util.HashMap()
+  val sourcesCache: java.util.Map[String, AbstractSource] = new util.HashMap()
+  val soundProvider: ISoundProvider = new ALSoundProvider
 
-  val sources = new ArrayList[String]
-  SoundSystemConfig.addLibrary(classOf[LibraryLWJGLOpenAL])
-  SoundSystemConfig.setCodec("ogg", classOf[CodecJOgg])
-  SoundSystemConfig.setCodec("wav", classOf[CodecWav])
-  val soundSystem = new SoundSystem
-  soundSystem.setMasterVolume(0.25f)
-  def play(url: URL, id: String, loop: Boolean): Unit = {
-    soundSystem.removeSource(id)
-    soundSystem.newStreamingSource(true, id, url, url.toExternalForm.substring(url.toExternalForm.lastIndexOf(".") + 1), loop, 0, 0, 0, 0, 0)
-    soundSystem.setVolume(id, 0.5f)
-    soundSystem.setPitch(id, 1f)
-    soundSystem.play(id)
-    sources.add(id)
+
+  def play(url: URL, id: String, loop: Boolean): AbstractSource = {
+    if (activeSounds.containsKey(id))
+      return activeSounds.get(id)
+
+    val source: AbstractSource = soundProvider.newSource(id, url, true)
+
+    source.setGain(0.5F)
+    soundProvider.play(id)
+    activeSounds.put(id, source)
   }
 
-  def stopAll(): Unit = {
-    for(source <- sources) {
-      stop(source)
-    }
-    sources.clear()
-  }
-
-  def play(id: String, loop: Boolean = false): Unit = {
+  def play(id: String): AbstractSource = {
     val url = ClassLoader.getSystemResource("assets/sounds/" + id)
-    this.play(url, id, loop)
+    this.play(url, id, false)
   }
 
   def stop(id: String): Unit = {
-    soundSystem.stop(id)
+    if (activeSounds.containsKey(id))
+      sourcesCache.put(id, activeSounds.remove(id))
   }
 
   def resume(id: String): Unit = {
-    soundSystem.play(id)
+    if (!activeSounds.containsKey(id) && sourcesCache.containsKey(id))
+      activeSounds.put(id, sourcesCache.remove(id))
+  }
+
+
+  def update(): Unit = {
+
+    val toRemove: java.util.List[String] = new util.ArrayList[String]()
+    val songList: util.Collection[AbstractSource] = activeSounds.values()
+    for (source <- songList)
+    {
+      println(soundProvider.isPlaying(source.getName))
+      if (soundProvider.isPlaying(source.getName))
+      {
+        source.update()
+        println("UPDATE")
+      }
+
+    }
+
+    for (name: String <- toRemove) {
+      activeSounds.remove(name)
+    }
+  }
+
+  def stopAll() = {
+    for (source <- activeSounds) {
+      stop(source._1)
+    }
+    activeSounds.clear()
   }
 
   def cleanup() = {
-    soundSystem.cleanup()
+    soundProvider.cleanup()
   }
 }

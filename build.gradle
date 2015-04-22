@@ -38,11 +38,8 @@ dependencies {
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
     compile 'io.netty:netty-all:4.0.25.Final'
     compile 'com.google.guava:guava:18.0'
-    compile 'paulscode.sound:SoundSystem:1.0'
-
-    compile 'paulscode.sound.libraries:LibraryLWJGLOpenAL:1.0'
-    compile 'paulscode.sound.codecs:CodecWav:1.0'
-    compile 'paulscode.sound.codecs:CodecJOgg:1.0'
+    compile 'eu.thog92:lwjall:1.0.10'
+    compile 'org.jcraft:jorbis:0.0.17'
 }
 
 tasks.withType(ScalaCompile) {
