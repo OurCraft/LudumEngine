@@ -224,6 +224,7 @@ abstract class GameBase(id: String) extends App {
         val deltaTime: Float = ns / 1000000000.0f // TODO: use a proper system
         if (!polledInput) {
           pollEvents(deltaTime)
+          soundManager.update()
           polledInput = true
         }
         update(deltaTime)
