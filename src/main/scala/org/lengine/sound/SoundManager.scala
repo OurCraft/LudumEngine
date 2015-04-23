@@ -43,23 +43,7 @@ class SoundManager {
 
 
   def update(): Unit = {
-
-    val toRemove: java.util.List[String] = new util.ArrayList[String]()
-    val songList: util.Collection[AbstractSource] = activeSounds.values()
-    for (source <- songList)
-    {
-      println(soundProvider.isPlaying(source.getName))
-      if (soundProvider.isPlaying(source.getName))
-      {
-        source.update()
-        println("UPDATE")
-      }
-
-    }
-
-    for (name: String <- toRemove) {
-      activeSounds.remove(name)
-    }
+    soundProvider.update()
   }
 
   def stopAll() = {
