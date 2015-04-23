@@ -60,10 +60,10 @@ object LWJGLSetup {
         val win: Array[String] = Array("jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll")
         nativesMap.put(OperatingSystem.WINDOWS, win)
 
-        val macosx: Array[String] = Array("liblwjgl.jnilib", "liblwjgl-osx.jnilib", "openal.dylib")
+        val macosx: Array[String] = Array("liblwjgl.dylib", "liblwjgl-osx.dylib", "openal.dylib", "libjinput-osx.jnilib")
         nativesMap.put(OperatingSystem.MACOSX, macosx)
 
-        val unix: Array[String] =  Array("liblwjgl.so", "libopenal.so")
+        val unix: Array[String] =  Array("liblwjgl.so", "libopenal.so", "libjinput-linux.so", "libjinput-linux64.so")
         nativesMap.put(OperatingSystem.LINUX, unix)
         nativesMap.put(OperatingSystem.SOLARIS, unix)
         nativesMap
